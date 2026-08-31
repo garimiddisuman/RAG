@@ -1,4 +1,7 @@
+from langchain_community.document_loaders import DirectoryLoader, TextLoader
 from langchain_text_splitters import MarkdownHeaderTextSplitter
+
+from app.config import DOCUMENTS_DIR
 
 
 HEADERS_TO_SPLIT_ON = [
@@ -6,6 +9,17 @@ HEADERS_TO_SPLIT_ON = [
   ("##", "heading_2"),
   ("###", "heading_3"),
 ]
+
+
+def load_documents():
+  loader = DirectoryLoader(
+    str(DOCUMENTS_DIR),
+    glob="**/*.md",
+    loader_cls=TextLoader,
+    loader_kwargs={"encoding": "utf-8"},
+  )
+
+  return loader.load()
 
 
 def chunk_documents(documents):
