@@ -15,5 +15,3 @@ vector_store = Chroma(
 )
 
 vector_store.add_documents(chunks)
-
-print(f"Stored {len(chunks)} chunks in ChromaDB")

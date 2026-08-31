@@ -36,13 +36,3 @@ for document in documents:
     chunk.metadata["source"] = document.metadata["source"]
 
   chunks.extend(document_chunks)
-
-
-print(f"Documents: {len(documents)}")
-print(f"Chunks: {len(chunks)}")
-
-for index, chunk in enumerate(chunks):
-  print("\n" + "-" * 60)
-  print(f"Chunk: {index + 1}")
-  print(f"Metadata: {chunk.metadata}")
-  print(f"Content:\n{chunk.page_content}")
