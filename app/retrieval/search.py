@@ -1,20 +1,34 @@
 from langchain_chroma import Chroma
 from langchain_ollama import OllamaEmbeddings
 
-
-embeddings = OllamaEmbeddings(
-  model="nomic-embed-text",
+from app.config import (
+  CHROMA_COLLECTION_NAME,
+  CHROMA_PERSISTENCE_DIR,
+  EMBEDDING_MODEL,
 )
 
-vector_store = Chroma(
-  collection_name="company_documents",
-  embedding_function=embeddings,
-  persist_directory="./chroma_db",
-)
+from app.ingestion.store import create_vector_store
 
-query = "How many annual leave days do employees get?"
 
-results = vector_store.similarity_search(
-  query,
-  k=3,
-)
+def search(query, k=3):
+  vector_store = create_vector_store()
+
+  return vector_store.similarity_search(
+    query,
+    k=k,
+  )
+
+
+if __name__ == "__main__":
+  query = "How many annual leave days do employees get?"
+
+  results = search(query)
+
+  print(f"Query: {query}")
+
+  for index, document in enumerate(results):
+    print("\n" + "-" * 60)
+    print(f"Result {index + 1}")
+    print(f"Source: {document.metadata.get('source')}")
+    print(f"Section: {document.metadata.get('heading_2')}")
+    print(f"\n{document.page_content}")
