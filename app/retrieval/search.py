@@ -1,8 +1,6 @@
 from langchain_chroma import Chroma
 from langchain_ollama import OllamaEmbeddings
 
-from app.ingestion.chunker import chunks
-
 
 embeddings = OllamaEmbeddings(
   model="nomic-embed-text",
@@ -14,4 +12,9 @@ vector_store = Chroma(
   persist_directory="./chroma_db",
 )
 
-vector_store.add_documents(chunks)
+query = "How many annual leave days do employees get?"
+
+results = vector_store.similarity_search(
+  query,
+  k=3,
+)
