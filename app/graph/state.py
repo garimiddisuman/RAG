@@ -7,4 +7,3 @@ from langgraph.graph.message import add_messages
 class RAGState(TypedDict):
   messages: Annotated[list[BaseMessage], add_messages]
   context: list
-  is_relevant: bool
