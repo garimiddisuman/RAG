@@ -14,19 +14,18 @@ llm = ChatOllama(
 )
 
 
-answer_prompt = ChatPromptTemplate.from_messages([
+prompt = ChatPromptTemplate.from_messages([
   (
     "system",
     """
 You are an internal company knowledge assistant.
 
-Answer the user's question using only the provided company documentation.
+Answer the user's question using the provided company documentation.
 
 If the documentation does not contain enough information to answer
-the question, say that you don't know.
+the question, clearly say that you don't know.
 
-Do not make up or assume information that is not present in the
-provided documentation.
+Do not make up or assume company information.
 
 Retrieved company documentation:
 
@@ -36,37 +35,6 @@ Retrieved company documentation:
   (
     "placeholder",
     "{messages}",
-  ),
-])
-
-
-relevance_prompt = ChatPromptTemplate.from_messages([
-  (
-    "system",
-    """
-You are a document relevance checker.
-
-Determine whether the provided company documentation contains
-information that can help answer the user's question.
-
-Return only one word:
-
-RELEVANT
-
-or
-
-IRRELEVANT
-""",
-  ),
-  (
-    "human",
-    """
-Question:
-{question}
-
-Company documentation:
-{context}
-""",
   ),
 ])
 
@@ -81,35 +49,13 @@ def retrieve(state: RAGState):
   }
 
 
-def check_relevance(state: RAGState):
-  question = state["messages"][-1].content
-
-  context = "\n\n".join(
-    document.page_content
-    for document in state["context"]
-  )
-
-  messages = relevance_prompt.invoke({
-    "question": question,
-    "context": context,
-  })
-
-  response = llm.invoke(messages)
-
-  result = response.content.strip().upper()
-
-  return {
-    "is_relevant": result == "RELEVANT",
-  }
-
-
 def generate(state: RAGState):
   context = "\n\n".join(
     document.page_content
     for document in state["context"]
   )
 
-  messages = answer_prompt.invoke({
+  messages = prompt.invoke({
     "context": context,
     "messages": state["messages"],
   })
@@ -121,45 +67,14 @@ def generate(state: RAGState):
   }
 
 
-def fallback(state: RAGState):
-  return {
-    "messages": [
-      {
-        "role": "assistant",
-        "content": "I don't have much information regarding this.",
-      }
-    ],
-  }
-
-
-def route_after_relevance_check(state: RAGState):
-  if state["is_relevant"]:
-    return "generate"
-
-  return "fallback"
-
-
 builder = StateGraph(RAGState)
 
 builder.add_node("retrieve", retrieve)
-builder.add_node("check_relevance", check_relevance)
 builder.add_node("generate", generate)
-builder.add_node("fallback", fallback)
 
 builder.add_edge(START, "retrieve")
-builder.add_edge("retrieve", "check_relevance")
-
-builder.add_conditional_edges(
-  "check_relevance",
-  route_after_relevance_check,
-  {
-    "generate": "generate",
-    "fallback": "fallback",
-  },
-)
-
+builder.add_edge("retrieve", "generate")
 builder.add_edge("generate", END)
-builder.add_edge("fallback", END)
 
 
 checkpointer = InMemorySaver()
@@ -188,7 +103,6 @@ if __name__ == "__main__":
           HumanMessage(content=question),
         ],
         "context": [],
-        "is_relevant": False,
       },
       config,
     )
