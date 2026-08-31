@@ -1,0 +1,43 @@
+# Python virtual environment
+.venv/
+venv/
+env/
+.clj-kondo/
+.lsp/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Python tooling
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# ChromaDB local database
+chroma_db/
+
+# Environment variables / secrets
+.env
+.env.*
+!.env.example
+
+# macOS
+.DS_Store
+
+# IDE / editors
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS temporary files
+*.tmp
+*.temp
