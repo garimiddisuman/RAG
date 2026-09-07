@@ -23,7 +23,5 @@ myrag = "app.graph.graph:main"
 [tool.setuptools.packages.find]
 include = ["app*"]
 
-[tool.setuptools.data-files]
-"data/documents" = [
-    "data/documents/*.md",
-]
+[tool.setuptools.package-data]
+app = ["data/documents/*.md"]
