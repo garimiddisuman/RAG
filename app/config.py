@@ -1,8 +1,17 @@
 from pathlib import Path
 
 
-DOCUMENTS_DIR = Path("documents")
-CHROMA_PERSISTENCE_DIR = "./chroma_db"
+APP_DIR = Path(__file__).resolve().parent.parent
+
+DOCUMENTS_DIR = APP_DIR / "data" / "documents"
+
+CHROMA_PERSISTENCE_DIR = (
+    Path.home()
+    / "Library"
+    / "Application Support"
+    / "my-rag"
+    / "chroma_db"
+)
 
 EMBEDDING_MODEL = "nomic-embed-text"
 LLM_MODEL = "llama3.2"

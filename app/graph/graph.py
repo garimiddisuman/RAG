@@ -3,6 +3,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_ollama import ChatOllama
 from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.graph import END, START, StateGraph
+from app.ingestion.store import initialize_vector_store
 
 from app.config import LLM_MODEL
 from app.graph.state import RAGState
@@ -83,8 +84,9 @@ graph = builder.compile(
   checkpointer=checkpointer,
 )
 
+def main():
+  initialize_vector_store()
 
-if __name__ == "__main__":
   config = {
     "configurable": {
       "thread_id": "employee-001",
@@ -108,3 +110,6 @@ if __name__ == "__main__":
     )
 
     print(f"\nBot: {result['messages'][-1].content}")
+
+if __name__ == "__main__":
+  main()

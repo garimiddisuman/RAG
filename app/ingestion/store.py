@@ -39,7 +39,19 @@ def add_documents(documents):
 def ingest_documents():
   documents = load_documents()
   chunks = chunk_documents(documents)
-  add_documents(chunks)
+
+  return add_documents(chunks)
+
+
+def is_vector_store_initialized():
+  vector_store = create_vector_store()
+
+  return vector_store._collection.count() > 0
+
+
+def initialize_vector_store():
+  if not is_vector_store_initialized():
+    ingest_documents()
 
 
 if __name__ == "__main__":
