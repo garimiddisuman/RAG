@@ -17,9 +17,6 @@ __pycache__/
 .coverage
 htmlcov/
 
-# ChromaDB local database
-chroma_db/
-
 # Environment variables / secrets
 .env
 .env.*
