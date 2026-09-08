@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "my-rag"
+version = "0.1.0"
+description = "A CLI-based RAG application"
+requires-python = ">=3.11"
+dependencies = [
+    "langchain",
+    "langgraph",
+    "langchain-ollama",
+    "langchain-community",
+    "langchain-text-splitters",
+    "langchain-chroma",
+    "chromadb",
+]
+
+[project.scripts]
+myrag = "app.graph.graph:main"
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+
+[tool.setuptools.package-data]
+app = ["data/documents/*.md"]
